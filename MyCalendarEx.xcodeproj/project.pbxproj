@@ -12,6 +12,8 @@
 		692DF239206F83C30053C45E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 692DF237206F83C30053C45E /* Main.storyboard */; };
 		692DF23B206F83CE0053C45E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 692DF23A206F83CE0053C45E /* Assets.xcassets */; };
 		692DF23E206F83CE0053C45E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 692DF23C206F83CE0053C45E /* LaunchScreen.storyboard */; };
+		692DF246206F85A70053C45E /* MyCalendarVars.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692DF245206F85A70053C45E /* MyCalendarVars.swift */; };
+		692DF248206F86450053C45E /* DateCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692DF247206F86450053C45E /* DateCollectionViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +24,8 @@
 		692DF23A206F83CE0053C45E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		692DF23D206F83CE0053C45E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		692DF23F206F83CE0053C45E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		692DF245206F85A70053C45E /* MyCalendarVars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyCalendarVars.swift; sourceTree = "<group>"; };
+		692DF247206F86450053C45E /* DateCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateCollectionViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,8 +58,10 @@
 		692DF232206F83C30053C45E /* MyCalendarEx */ = {
 			isa = PBXGroup;
 			children = (
-				692DF233206F83C30053C45E /* AppDelegate.swift */,
 				692DF235206F83C30053C45E /* ViewController.swift */,
+				692DF247206F86450053C45E /* DateCollectionViewCell.swift */,
+				692DF245206F85A70053C45E /* MyCalendarVars.swift */,
+				692DF233206F83C30053C45E /* AppDelegate.swift */,
 				692DF237206F83C30053C45E /* Main.storyboard */,
 				692DF23A206F83CE0053C45E /* Assets.xcassets */,
 				692DF23C206F83CE0053C45E /* LaunchScreen.storyboard */,
@@ -135,6 +141,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				692DF248206F86450053C45E /* DateCollectionViewCell.swift in Sources */,
+				692DF246206F85A70053C45E /* MyCalendarVars.swift in Sources */,
 				692DF236206F83C30053C45E /* ViewController.swift in Sources */,
 				692DF234206F83C30053C45E /* AppDelegate.swift in Sources */,
 			);
