@@ -3,14 +3,10 @@ import UIKit
 
 class ViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
     
-    
     @IBOutlet weak var calendarCollectionView: UICollectionView!
     @IBOutlet weak var monthLabel: UILabel!
     
-    //let Months = ["", "January","February","March","April","May","June","July","August","September","October","November","December", ]
-    //let DaysOfMonth = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-    
-    var DaysInMonths = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]   //  0월은 존재하지 않기 때문에 DaysInMonths[0]은 값은 사용되지 않는다
+    var DaysInMonths = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]   //  0월은 존재X DaysInMonths[0]은 값은 사용되지 않는다
     var NumberOfEmptyBox = Int()    // The number of "empty boxex" at th start of the currnet month
     var NextNumberOfEmptyBox = Int()
     var PreviousNumberOfEmptyBox = Int()
@@ -134,8 +130,8 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CalendarCell", for: indexPath) as! DateCollectionViewCell
-        cell.backgroundColor = UIColor.clear
         
+        cell.backgroundColor = UIColor.clear
         cell.dateLabel.textColor = UIColor.black
         
         if cell.isHidden {
@@ -181,5 +177,16 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         return cell
     }
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        print("\(indexPath.row) is selected")
+        collectionView.cellForItem(at: indexPath)?.backgroundColor = UIColor.white
+    }
+    
+    @IBAction func memoButtonAction(_ sender: Any) {
+        performSegue(withIdentifier: "goInputMemo", sender: self)
+    }
+    @IBAction func gongsuButtonAction(_ sender: Any) {
+        
+    }
 }
 
