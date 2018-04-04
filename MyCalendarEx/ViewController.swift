@@ -9,8 +9,6 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     
     var daysInMonths = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]   //  0월은 존재X daysInMonths[0]은 값은 사용되지 않는다
     var numberOfEmptyBox = Int()    // The number of "empty boxex" at th start of the currnet month
-    var nextNumberOfEmptyBox = Int()
-    var previousNumberOfEmptyBox = Int()
     var direction = 0   // = 0  현재달 , = 1 앞으로의 달 ,  = -1 지난달
     var positionIndex = 0    // 매월 1일의 위치(요일) , 앞의 빈칸은 빈칸으로 채워진다
     var dayCounter = 0
@@ -27,7 +25,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         //print(dataFilePath)
         
         getStartDateDayPosition()
-        //loadItems()
+
     }
 
     
@@ -56,15 +54,15 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
             positionIndex = numberOfEmptyBox
             
         case 1...:                          // 다음버튼 눌렸을 시
-            nextNumberOfEmptyBox = (positionIndex + daysInMonths[month])%7
-            positionIndex = nextNumberOfEmptyBox
+            numberOfEmptyBox = (positionIndex + daysInMonths[month])%7
+            positionIndex = numberOfEmptyBox
             
         case -1:                            // 이전버튼 눌렸을 시
-            previousNumberOfEmptyBox = (7 - (daysInMonths[month] - positionIndex)%7)
-            if previousNumberOfEmptyBox == 7 {
-                previousNumberOfEmptyBox = 0
+            numberOfEmptyBox = (7 - (daysInMonths[month] - positionIndex)%7)
+            if numberOfEmptyBox == 7 {
+                numberOfEmptyBox = 0
             }
-            positionIndex = previousNumberOfEmptyBox
+            positionIndex = numberOfEmptyBox
         default:
             fatalError()
         }
@@ -126,16 +124,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     
     //MARK:  - UICollectionViewDataSource 함수
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        switch direction {
-        case 0:
-            return daysInMonths[month] + numberOfEmptyBox
-        case 1...:
-            return daysInMonths[month] + nextNumberOfEmptyBox
-        case -1:
-            return daysInMonths[month] + previousNumberOfEmptyBox
-        default:
-            fatalError()
-        }
+        return daysInMonths[month] + numberOfEmptyBox
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -148,16 +137,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
             cell.isHidden = false
         }
         
-        switch direction {
-        case 0:
-            cell.dateLabel.text = "\(indexPath.row + 1 - numberOfEmptyBox)"
-        case 1...:
-            cell.dateLabel.text = "\(indexPath.row + 1 - nextNumberOfEmptyBox)"
-        case -1:
-            cell.dateLabel.text = "\(indexPath.row + 1 - previousNumberOfEmptyBox)"
-        default:
-            fatalError()
-        }
+        cell.dateLabel.text = "\(indexPath.row + 1 - numberOfEmptyBox)"
         
         if Int(cell.dateLabel.text!)! < 1 {
             cell.isHidden = true
@@ -187,23 +167,9 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
             }
         }
         
-        switch direction {
-        case 0:
-            if indexPath.row >= numberOfEmptyBox {
-                cell.strGongsuLabel.text = itemArray.isEmpty ? "" : itemArray[indexPath.row - numberOfEmptyBox].strGongsu
-            }
-        case 1...:
-            if indexPath.row >= nextNumberOfEmptyBox {
-                cell.strGongsuLabel.text = itemArray.isEmpty ? "" : itemArray[indexPath.row - nextNumberOfEmptyBox].strGongsu
-            }
-        case -1:
-            if indexPath.row >= previousNumberOfEmptyBox {
-                cell.strGongsuLabel.text = itemArray.isEmpty ? "" : itemArray[indexPath.row - previousNumberOfEmptyBox].strGongsu
-            }
-        default:
-            fatalError()
+        if indexPath.row >= numberOfEmptyBox {
+            cell.strGongsuLabel.text = itemArray.isEmpty ? "" : itemArray[indexPath.row - numberOfEmptyBox].strGongsu
         }
-        
         
         return cell
     }
@@ -237,16 +203,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                 let newItem = Item()
                 var calculatedDate = Int()
                 
-                switch self.direction {
-                case 0:
-                    calculatedDate = self.preIndexPath.row - self.numberOfEmptyBox
-                case 1...:
-                    calculatedDate = self.preIndexPath.row - self.nextNumberOfEmptyBox
-                case -1:
-                    calculatedDate = self.preIndexPath.row - self.previousNumberOfEmptyBox
-                default:
-                    fatalError()
-                }
+                calculatedDate = self.preIndexPath.row - self.numberOfEmptyBox
                 
                 newItem.strDate = "\(self.strYearMonth)\(self.makeTwoDigitString(calculatedDate + 1))"
                 print(newItem.strDate)
