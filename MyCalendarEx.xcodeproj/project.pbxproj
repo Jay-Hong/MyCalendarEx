@@ -16,6 +16,7 @@
 		692DF248206F86450053C45E /* DateCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692DF247206F86450053C45E /* DateCollectionViewCell.swift */; };
 		692DF24D206FEFDF0053C45E /* InputMemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692DF24C206FEFDF0053C45E /* InputMemoViewController.swift */; };
 		692DF24F206FF2840053C45E /* GongsuCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692DF24E206FF2840053C45E /* GongsuCollectionViewCell.swift */; };
+		692DF251207214B10053C45E /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692DF250207214B10053C45E /* Item.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 		692DF247206F86450053C45E /* DateCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateCollectionViewCell.swift; sourceTree = "<group>"; };
 		692DF24C206FEFDF0053C45E /* InputMemoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputMemoViewController.swift; sourceTree = "<group>"; };
 		692DF24E206FF2840053C45E /* GongsuCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GongsuCollectionViewCell.swift; sourceTree = "<group>"; };
+		692DF250207214B10053C45E /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,6 +67,7 @@
 				692DF233206F83C30053C45E /* AppDelegate.swift */,
 				692DF24A206F924E0053C45E /* Controllers */,
 				692DF24B206F92670053C45E /* Views */,
+				692DF252207214BA0053C45E /* Data Model */,
 				692DF249206F91EA0053C45E /* Supporting Files */,
 				692DF23F206F83CE0053C45E /* Info.plist */,
 			);
@@ -98,6 +101,14 @@
 				692DF24E206FF2840053C45E /* GongsuCollectionViewCell.swift */,
 			);
 			name = Views;
+			sourceTree = "<group>";
+		};
+		692DF252207214BA0053C45E /* Data Model */ = {
+			isa = PBXGroup;
+			children = (
+				692DF250207214B10053C45E /* Item.swift */,
+			);
+			name = "Data Model";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -175,6 +186,7 @@
 				692DF248206F86450053C45E /* DateCollectionViewCell.swift in Sources */,
 				692DF246206F85A70053C45E /* MyCalendarVars.swift in Sources */,
 				692DF236206F83C30053C45E /* ViewController.swift in Sources */,
+				692DF251207214B10053C45E /* Item.swift in Sources */,
 				692DF234206F83C30053C45E /* AppDelegate.swift in Sources */,
 				692DF24F206FF2840053C45E /* GongsuCollectionViewCell.swift in Sources */,
 			);
