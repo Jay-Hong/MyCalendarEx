@@ -6,23 +6,25 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     //MARK:  - 상수, 변수
     @IBOutlet weak var calendarCollectionView: UICollectionView!
     @IBOutlet weak var monthLabel: UILabel!
+    @IBOutlet weak var monthlyGongsuLabel: UILabel!
+    @IBOutlet weak var memoLabel: UILabel!
     
     var daysInMonths = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]   //  0월은 존재X daysInMonths[0]은 값은 사용되지 않는다
-    var numberOfEmptyBox = Int()    // The number of "empty boxex" at th start of the currnet month
-    var direction = 0   // = 0  현재달 , = 1 앞으로의 달 ,  = -1 지난달
-    var positionIndex = 0    // 매월 1일의 위치(요일) , 앞의 빈칸은 빈칸으로 채워진다
-    var dayCounter = 0
+    var numberOfEmptyBox: Int = 0    // The number of "empty boxex" at th start of the currnet month
+    var direction: Int = 0   // = 0  현재달 , = 1 앞으로의 달 ,  = -1 지난달
+    var positionIndex: Int = 0    // 매월 1일의 위치(요일) , 앞의 빈칸은 빈칸으로 채워진다
+    var dayCounter: Int = 0
     
     var strYearMonth = String()
     var preIndexPath = IndexPath()
-    var monthlyGongsu: Float = 0.0
+    var monthlyGongsu = Float()
     var itemArray = [Item]()
     let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        //print(dataFilePath)
+        print(dataFilePath!)
         
         getStartDateDayPosition()
 
@@ -32,16 +34,12 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     //MARK:  - 달력 날짜 위치 설정 함수
     func getStartDateDayPosition() {
         switch direction {
-        case 0:                             // 현재 달일 경우
+        case 0:         // 현재 달일 경우
             monthLabel.text = "\(year)년  \(month)월"
             strYearMonth = "\(year)\(makeTwoDigitString(month))"
             loadItems()
             
-            if year % 4 == 0 {
-                daysInMonths[2] = 29
-            } else {
-                daysInMonths[2] = 28
-            }
+            daysInMonths[2] = year % 4 == 0 ? 29 : 28
             
             // 당월의 1일 앞 빈칸수 구하기, 달력보며 연구
             dayCounter = day % 7
@@ -53,11 +51,11 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
             // positionIndex (1일의 위치) ,  NumberOfEmptyBox (1일 앞의 빈 날짜 채우기)
             positionIndex = numberOfEmptyBox
             
-        case 1...:                          // 다음버튼 눌렸을 시
+        case 1:         // 다음버튼 눌렸을 시
             numberOfEmptyBox = (positionIndex + daysInMonths[month])%7
             positionIndex = numberOfEmptyBox
             
-        case -1:                            // 이전버튼 눌렸을 시
+        case -1:        // 이전버튼 눌렸을 시
             numberOfEmptyBox = (7 - (daysInMonths[month] - positionIndex)%7)
             if numberOfEmptyBox == 7 {
                 numberOfEmptyBox = 0
@@ -77,11 +75,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
             month = 1
             year += 1
             
-            if year % 4 == 0 {
-                daysInMonths[2] = 29
-            } else {
-                daysInMonths[2] = 28
-            }
+            daysInMonths[2] = year % 4 == 0 ? 29 : 28
             
             getStartDateDayPosition()
 
@@ -103,11 +97,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
             month = 12
             year -= 1
             
-            if year % 4 == 0 {
-                daysInMonths[2] = 29
-            } else {
-                daysInMonths[2] = 28
-            }
+            daysInMonths[2] = year % 4 == 0 ? 29 : 28
             
             getStartDateDayPosition()
             
@@ -124,7 +114,9 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     
     //MARK:  - UICollectionViewDataSource 함수
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        monthlyGongsu = 0
         return daysInMonths[month] + numberOfEmptyBox
+        
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -157,33 +149,67 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
             break
         }
         
+        // preIndexPagh 설정 (해당월이면 오늘 / 다른달이면 1일)
+        if (indexPath.row - numberOfEmptyBox == 0) && (month != calendar.component(.month , from: date) || year != calendar.component(.year, from: date)) {
+            preIndexPath = indexPath
+            cell.backgroundColor = UIColor.white
+        }
+        
         // 현재날짜 표시
         if month == calendar.component(.month , from: date)
             && indexPath.row + 1 == day + numberOfEmptyBox
             && year == calendar.component(.year, from: date) {
             cell.backgroundColor = UIColor.lightGray
-            if preIndexPath.isEmpty {
+//            if preIndexPath.isEmpty {
                 preIndexPath = indexPath
-            }
+                cell.backgroundColor = UIColor.white
+//            }
         }
         
+        // 화면에 데이터 뿌려주기
         if indexPath.row >= numberOfEmptyBox {
             cell.strGongsuLabel.text = itemArray.isEmpty ? "" : itemArray[indexPath.row - numberOfEmptyBox].strGongsu
+            cell.memoLabel.text = itemArray.isEmpty ? "" : itemArray[indexPath.row - numberOfEmptyBox].memo
+            monthlyGongsu += itemArray.isEmpty ? 0 : itemArray[indexPath.row - numberOfEmptyBox].numGongsu
+            if (indexPath.row + 1) == (daysInMonths[month] + numberOfEmptyBox) {
+                monthlyGongsuLabel.text = String(monthlyGongsu)
+            }
         }
-        
+
         return cell
     }
     
     //MARK:  - 날짜 선택시
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print("\(indexPath.row) is selected")
+        
         collectionView.cellForItem(at: preIndexPath)?.backgroundColor = UIColor.clear
+        
+        // 오늘은 그대로 색 유지
+        if month == calendar.component(.month , from: date)
+            && preIndexPath.row + 1 == day + numberOfEmptyBox
+            && year == calendar.component(.year, from: date) {
+            collectionView.cellForItem(at: preIndexPath)?.backgroundColor = UIColor.lightGray
+        }
+        
         collectionView.cellForItem(at: indexPath)?.backgroundColor = UIColor.white
         preIndexPath = indexPath
     }
     
+    //MARK:  - 메모입력
     @IBAction func memoButtonAction(_ sender: Any) {
         performSegue(withIdentifier: "goInputMemo", sender: self)
+    }
+    
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let inputMemoViewController = (segue.destination as! InputMemoViewController)
+//        inputMemoViewController.itemArray = itemArray
+//        inputMemoViewController.numberOfEmptyBox = numberOfEmptyBox
+//        inputMemoViewController.preIndexPath = preIndexPath
+        inputMemoViewController.strYearMonth = strYearMonth
+        inputMemoViewController.itemArrayIndex = preIndexPath.row - numberOfEmptyBox
+        inputMemoViewController.dataFilePath = dataFilePath
     }
     
     //MARK:  - 공수입력
@@ -209,6 +235,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                 print(newItem.strDate)
                 newItem.strGongsu = textField.text!
                 newItem.numGongsu = Float(textField.text!)!
+                newItem.memo = self.itemArray[calculatedDate].memo
                 
                 
                 if self.itemArray.isEmpty {
@@ -260,6 +287,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     
     func loadItems() {
         // 새 쌀은 새 포대에
+        monthlyGongsu = 0
         itemArray.removeAll()
         if let data = try? Data(contentsOf: (dataFilePath?.appendingPathComponent("\(strYearMonth).plist"))!) {
             let decoder = PropertyListDecoder()
