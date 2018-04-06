@@ -19,6 +19,7 @@ class InputMemoViewController: UIViewController {
     
     @IBAction func saveMemoButtonAction(_ sender: Any) {
         
+        direction = 3
         let newItem = Item()
         
         if itemArray.isEmpty {
@@ -40,11 +41,11 @@ class InputMemoViewController: UIViewController {
     // MARK: - Navigation
     // prepare()함수로 넘겨줄때는 Destination Viewcontroller의 현재 값을 사용할 수 없고
     // 초기화된 변수값만 가져오거나 쓸수 있다
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "goMainCalendar" {
-            
-        }
-    }
+//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+//        if segue.identifier == "goMainCalendar" {
+//
+//        }
+//    }
 
 }
 

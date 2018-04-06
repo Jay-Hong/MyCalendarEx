@@ -2,27 +2,27 @@
 import UIKit
 
 class ViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
-    
     //MARK:  - 상수, 변수
     @IBOutlet weak var calendarCollectionView: UICollectionView!
     @IBOutlet weak var monthLabel: UILabel!
     @IBOutlet weak var monthlyGongsuLabel: UILabel!
     @IBOutlet weak var memoLabel: UILabel!
 
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-
         print(dataFilePath!)
-        
         getStartDateDayPosition()
 
     }
 
-    
     //MARK:  - 달력 날짜 위치 설정 함수
     func getStartDateDayPosition() {
         switch direction {
+        case 3:
+            monthLabel.text = "\(year)년  \(month)월"
+            strYearMonth = "\(year)\(makeTwoDigitString(month))"
+            loadItems()
+        
         case 0:         // 현재 달일 경우
             monthLabel.text = "\(year)년  \(month)월"
             strYearMonth = "\(year)\(makeTwoDigitString(month))"
@@ -43,6 +43,8 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         case 1:         // 다음버튼 눌렸을 시
             numberOfEmptyBox = (positionIndex + daysInMonths[month])%7
             positionIndex = numberOfEmptyBox
+            monthLabel.text = "\(year)년  \(month)월"
+            strYearMonth = "\(year)\(makeTwoDigitString(month))"
             
         case -1:        // 이전버튼 눌렸을 시
             numberOfEmptyBox = (7 - (daysInMonths[month] - positionIndex)%7)
@@ -50,6 +52,8 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                 numberOfEmptyBox = 0
             }
             positionIndex = numberOfEmptyBox
+            monthLabel.text = "\(year)년  \(month)월"
+            strYearMonth = "\(year)\(makeTwoDigitString(month))"
         default:
             fatalError()
         }
@@ -164,7 +168,6 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                 monthlyGongsuLabel.text = String(monthlyGongsu)
             }
         }
-
         return cell
     }
     
@@ -188,10 +191,6 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     //MARK:  - 메모입력
     @IBAction func memoButtonAction(_ sender: Any) {
         performSegue(withIdentifier: "goInputMemo", sender: self)
-    }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-//        let inputMemoViewController = (segue.destination as! InputMemoViewController)
     }
     
     //MARK:  - 공수입력
