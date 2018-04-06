@@ -8,18 +8,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     @IBOutlet weak var monthLabel: UILabel!
     @IBOutlet weak var monthlyGongsuLabel: UILabel!
     @IBOutlet weak var memoLabel: UILabel!
-    
-    var daysInMonths = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]   //  0월은 존재X daysInMonths[0]은 값은 사용되지 않는다
-    var numberOfEmptyBox: Int = 0    // The number of "empty boxex" at th start of the currnet month
-    var direction: Int = 0   // = 0  현재달 , = 1 앞으로의 달 ,  = -1 지난달
-    var positionIndex: Int = 0    // 매월 1일의 위치(요일) , 앞의 빈칸은 빈칸으로 채워진다
-    var dayCounter: Int = 0
-    
-    var strYearMonth = String()
-    var preIndexPath = IndexPath()
-    var monthlyGongsu = Float()
-    var itemArray = [Item]()
-    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -201,15 +190,8 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         performSegue(withIdentifier: "goInputMemo", sender: self)
     }
     
-    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let inputMemoViewController = (segue.destination as! InputMemoViewController)
-//        inputMemoViewController.itemArray = itemArray
-//        inputMemoViewController.numberOfEmptyBox = numberOfEmptyBox
-//        inputMemoViewController.preIndexPath = preIndexPath
-        inputMemoViewController.strYearMonth = strYearMonth
-        inputMemoViewController.itemArrayIndex = preIndexPath.row - numberOfEmptyBox
-        inputMemoViewController.dataFilePath = dataFilePath
+//        let inputMemoViewController = (segue.destination as! InputMemoViewController)
     }
     
     //MARK:  - 공수입력
@@ -229,23 +211,22 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                 let newItem = Item()
                 var calculatedDate = Int()
                 
-                calculatedDate = self.preIndexPath.row - self.numberOfEmptyBox
+                calculatedDate = preIndexPath.row - numberOfEmptyBox
                 
-                newItem.strDate = "\(self.strYearMonth)\(self.makeTwoDigitString(calculatedDate + 1))"
+                newItem.strDate = "\(strYearMonth)\(makeTwoDigitString(calculatedDate + 1))"
                 print(newItem.strDate)
                 newItem.strGongsu = textField.text!
                 newItem.numGongsu = Float(textField.text!)!
-                newItem.memo = self.itemArray[calculatedDate].memo
-                
-                
-                if self.itemArray.isEmpty {
-                    self.makeItemArray()
+                newItem.memo = itemArray[calculatedDate].memo
+
+                if itemArray.isEmpty {
+                    makeItemArray()
                 }
                 
-                self.itemArray.remove(at: calculatedDate)
-                self.itemArray.insert(newItem, at: calculatedDate)
+                itemArray.remove(at: calculatedDate)
+                itemArray.insert(newItem, at: calculatedDate)
               
-                self.saveItems()
+                saveItems()
                 
                 self.calendarCollectionView.reloadData()
             }
@@ -253,50 +234,6 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         alert.addAction(action)
         present(alert, animated: true, completion: nil)
     }
-    
-    func makeTwoDigitString(_ number : Int) -> String {
-        
-        var convertedString = ""
-        
-        switch number {
-        case 1...9:
-            convertedString = "0\(number)"
-        default:
-            convertedString = "\(number)"
-        }
-        return convertedString
-    }
-    
-    func makeItemArray() {
-        for _ in 1...daysInMonths[month] {
-            itemArray.append(Item())
-        }
-    }
-    
-    //MARK:  - PList 입출력
-    func saveItems() {
-        let encoder = PropertyListEncoder()
-        do {
-            let data = try encoder.encode(itemArray)
-            try data.write(to: (dataFilePath?.appendingPathComponent("\(strYearMonth).plist"))!)
-        } catch {
-            print("Error encoding item array, \(error)")
-        }
-        calendarCollectionView.reloadData()
-    }
-    
-    func loadItems() {
-        // 새 쌀은 새 포대에
-        monthlyGongsu = 0
-        itemArray.removeAll()
-        if let data = try? Data(contentsOf: (dataFilePath?.appendingPathComponent("\(strYearMonth).plist"))!) {
-            let decoder = PropertyListDecoder()
-            do {
-                itemArray = try decoder.decode([Item].self, from: data)
-            } catch {
-                print("Error decoding item array, \(error)")
-            }
-        }
-    }
+
 }
 
