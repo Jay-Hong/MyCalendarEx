@@ -43,8 +43,6 @@ func saveItems() {
 }
 
 func loadItems() {
-    // 새 쌀은 새 포대에
-    monthlyGongsu = 0
     itemArray.removeAll()
     if let data = try? Data(contentsOf: (dataFilePath?.appendingPathComponent("\(strYearMonth).plist"))!) {
         let decoder = PropertyListDecoder()

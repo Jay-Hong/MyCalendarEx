@@ -4,13 +4,13 @@ import UIKit
 class ViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
     //MARK:  - 상수, 변수
     @IBOutlet weak var calendarCollectionView: UICollectionView!
-    @IBOutlet weak var monthLabel: UILabel!
     @IBOutlet weak var monthlyGongsuLabel: UILabel!
+    @IBOutlet weak var monthLabel: UILabel!
     @IBOutlet weak var memoLabel: UILabel!
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        print(dataFilePath!)
+//        print(dataFilePath!)
         getStartDateDayPosition()
 
     }
@@ -33,10 +33,10 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
             // 당월의 1일 앞 빈칸수 구하기, 달력보며 연구
             dayCounter = day % 7
             numberOfEmptyBox = weekday - dayCounter
+            numberOfEmptyBox = numberOfEmptyBox == 7 ? 0 : numberOfEmptyBox
             if numberOfEmptyBox < 0 {
                 numberOfEmptyBox += 7
             }
-            
             // positionIndex (1일의 위치) ,  NumberOfEmptyBox (1일 앞의 빈 날짜 채우기)
             positionIndex = numberOfEmptyBox
             
@@ -59,6 +59,23 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         }
     }
 
+    //MARK:  - 날짜 선택시
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        print("\(indexPath.row) is selected")
+        
+        collectionView.cellForItem(at: preIndexPath)?.backgroundColor = UIColor.clear
+        
+        // 오늘은 그대로 색 유지
+        if month == calendar.component(.month , from: date)
+            && preIndexPath.row + 1 == day + numberOfEmptyBox
+            && year == calendar.component(.year, from: date) {
+            collectionView.cellForItem(at: preIndexPath)?.backgroundColor = UIColor.lightGray
+        }
+        collectionView.cellForItem(at: indexPath)?.backgroundColor = UIColor.white
+        memoLabel.text =  itemArray.isEmpty ? "" : itemArray[indexPath.row - numberOfEmptyBox].memo
+        preIndexPath = indexPath
+    }
+    
     //MARK:  - 달력 전 후 버튼
     @IBAction func nextButtonAction(_ sender: Any) {
         direction = 1
@@ -146,6 +163,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         if (indexPath.row - numberOfEmptyBox == 0) && (month != calendar.component(.month , from: date) || year != calendar.component(.year, from: date)) {
             preIndexPath = indexPath
             cell.backgroundColor = UIColor.white
+            memoLabel.text =  itemArray.isEmpty ? "" : itemArray[indexPath.row - numberOfEmptyBox].memo
         }
         
         // 현재날짜 표시
@@ -161,31 +179,38 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         
         // 화면에 데이터 뿌려주기
         if indexPath.row >= numberOfEmptyBox {
+            
+            let itemArrayIndex = indexPath.row - numberOfEmptyBox
+            
+            if itemArray.isEmpty {  // itemArray 가 비어 있을 경우
+                cell.strGongsuLabel.isHidden = true
+                cell.memoLabel.isHidden = true
+            } else {    // itemArray에 값이 있고
+                if itemArray[itemArrayIndex].strGongsu == "" {  // 공수가 비었을경우
+                    cell.strGongsuLabel.isHidden = true
+                } else {    // 공수에 값이 있을경우
+                    cell.strGongsuLabel.isHidden = false
+                    cell.strGongsuLabel.text = itemArray[itemArrayIndex].strGongsu
+                }
+                if itemArray[itemArrayIndex].memo == "" {   // 메모가 비었을 경우
+                    cell.memoLabel.isHidden = true
+                } else {    //  메모값이 있을경우
+                    cell.memoLabel.isHidden = false
+                    cell.memoLabel.text = itemArray[itemArrayIndex].memo
+                }
+            }
+            
             cell.strGongsuLabel.text = itemArray.isEmpty ? "" : itemArray[indexPath.row - numberOfEmptyBox].strGongsu
+            
             cell.memoLabel.text = itemArray.isEmpty ? "" : itemArray[indexPath.row - numberOfEmptyBox].memo
+            
             monthlyGongsu += itemArray.isEmpty ? 0 : itemArray[indexPath.row - numberOfEmptyBox].numGongsu
+            
             if (indexPath.row + 1) == (daysInMonths[month] + numberOfEmptyBox) {
                 monthlyGongsuLabel.text = String(monthlyGongsu)
             }
         }
         return cell
-    }
-    
-    //MARK:  - 날짜 선택시
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print("\(indexPath.row) is selected")
-        
-        collectionView.cellForItem(at: preIndexPath)?.backgroundColor = UIColor.clear
-        
-        // 오늘은 그대로 색 유지
-        if month == calendar.component(.month , from: date)
-            && preIndexPath.row + 1 == day + numberOfEmptyBox
-            && year == calendar.component(.year, from: date) {
-            collectionView.cellForItem(at: preIndexPath)?.backgroundColor = UIColor.lightGray
-        }
-        
-        collectionView.cellForItem(at: indexPath)?.backgroundColor = UIColor.white
-        preIndexPath = indexPath
     }
     
     //MARK:  - 메모입력
