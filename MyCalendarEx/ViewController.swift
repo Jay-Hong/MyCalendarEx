@@ -186,7 +186,8 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                 cell.strGongsuLabel.isHidden = true
                 cell.memoLabel.isHidden = true
             } else {    // itemArray에 값이 있고
-                if itemArray[itemArrayIndex].strGongsu == "" {  // 공수가 비었을경우
+                if itemArray[itemArrayIndex].strGongsu == "" ||
+                    itemArray[itemArrayIndex].strGongsu == "0" {  // 공수가 비었을경우
                     cell.strGongsuLabel.isHidden = true
                 } else {    // 공수에 값이 있을경우
                     cell.strGongsuLabel.isHidden = false
@@ -232,20 +233,17 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         let action = UIAlertAction(title: "저장", style: .default) { (action) in
             if textField.text != "" {
                 
+                let calculatedDate = preIndexPath.row - numberOfEmptyBox
                 let newItem = Item()
-                var calculatedDate = Int()
                 
-                calculatedDate = preIndexPath.row - numberOfEmptyBox
-                
-                newItem.strDate = "\(strYearMonth)\(makeTwoDigitString(calculatedDate + 1))"
-                print(newItem.strDate)
-                newItem.strGongsu = textField.text!
-                newItem.numGongsu = Float(textField.text!)!
-                newItem.memo = itemArray[calculatedDate].memo
-
                 if itemArray.isEmpty {
                     makeItemArray()
                 }
+                
+                newItem.strDate = "\(strYearMonth)\(makeTwoDigitString(calculatedDate + 1))"
+                newItem.strGongsu = textField.text!
+                newItem.numGongsu = Float(textField.text!)!
+                newItem.memo = itemArray[calculatedDate].memo
                 
                 itemArray.remove(at: calculatedDate)
                 itemArray.insert(newItem, at: calculatedDate)
@@ -260,4 +258,30 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     }
 
 }
+
+
+
+extension ViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let width = collectionView.frame.width / 7 - 1
+        return CGSize(width: width, height: width)
+    }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 1.0
+    }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 1.0
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
 
