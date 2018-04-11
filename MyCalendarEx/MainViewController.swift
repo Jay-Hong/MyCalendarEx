@@ -1,7 +1,7 @@
 
 import UIKit
 
-class ViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
+class MainViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
     //MARK:  - 상수, 변수
     @IBOutlet weak var calendarCollectionView: UICollectionView!
     @IBOutlet weak var monthlyGongsuLabel: UILabel!
@@ -69,9 +69,9 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         if month == calendar.component(.month , from: date)
             && preIndexPath.row + 1 == day + numberOfEmptyBox
             && year == calendar.component(.year, from: date) {
-            collectionView.cellForItem(at: preIndexPath)?.backgroundColor = UIColor.lightGray
+//            collectionView.cellForItem(at: preIndexPath)?.backgroundColor = UIColor.cyan
         }
-        collectionView.cellForItem(at: indexPath)?.backgroundColor = UIColor.white
+        collectionView.cellForItem(at: indexPath)?.backgroundColor = UIColor.lightGray
         memoLabel.text =  itemArray.isEmpty ? "" : itemArray[indexPath.row - numberOfEmptyBox].memo
         preIndexPath = indexPath
     }
@@ -134,6 +134,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         
         cell.backgroundColor = UIColor.clear
         cell.dateLabel.textColor = UIColor.black
+        cell.dateLabel.backgroundColor = UIColor.clear
         
         if cell.isHidden {
             cell.isHidden = false
@@ -162,7 +163,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         // preIndexPagh 설정 (해당월이면 오늘 / 다른달이면 1일)
         if (indexPath.row - numberOfEmptyBox == 0) && (month != calendar.component(.month , from: date) || year != calendar.component(.year, from: date)) {
             preIndexPath = indexPath
-            cell.backgroundColor = UIColor.white
+            cell.backgroundColor = UIColor.lightGray
             memoLabel.text =  itemArray.isEmpty ? "" : itemArray[indexPath.row - numberOfEmptyBox].memo
         }
         
@@ -173,9 +174,13 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
             cell.backgroundColor = UIColor.lightGray
 //            if preIndexPath.isEmpty {
                 preIndexPath = indexPath
-                cell.backgroundColor = UIColor.white
+                cell.backgroundColor = UIColor.lightGray
+                cell.dateLabel.backgroundColor = UIColor.orange
 //            }
         }
+        
+        cell.strGongsuLabel.layer.cornerRadius = 9
+        cell.strGongsuLabel.layer.masksToBounds = true
         
         // 화면에 데이터 뿌려주기
         if indexPath.row >= numberOfEmptyBox {
@@ -261,7 +266,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
 
 
 
-extension ViewController: UICollectionViewDelegateFlowLayout {
+extension MainViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = collectionView.frame.width / 7 - 1
         return CGSize(width: width, height: width)
